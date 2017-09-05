@@ -50,14 +50,22 @@
 -spec get_address() -> socket_address().
 get_address() ->
   %% TODO check if we do not return a link-local address
-  {ok, List} = inet:getif(),
-  {Ip, _, _} = hd(List),
+  StrIp = os:cmd("curl ifconfig.me"),
+  Tokens = string:tokens(StrIp, "\n"),
+  lager:warning("Ipppppppp: ~p", [lists:last(Tokens)]),
+  {ok, Ip} = inet_parse:address(lists:last(Tokens)),
   Port = application:get_env(antidote, pubsub_port, ?DEFAULT_PUBSUB_PORT),
   {Ip, Port}.
 
 -spec get_address_list() -> [socket_address()].
 get_address_list() ->
-    {ok, List} = inet:getif(),
+    {ok, IpList} = inet:getif(),
+    StrIp = os:cmd("curl ifconfig.me"),
+    Tokens = string:tokens(StrIp, "\n"),
+    lager:warning("Ipppppppp: ~p", [lists:last(Tokens)]),
+    {ok, Ip} = inet_parse:address(lists:last(Tokens)),
+    {Fst,Snd,Thd,_Fth} = Ip,
+    List = [{Ip, {Fst,Snd,Thd,255}, {255,255,255,0}} | tl(IpList)],
     Port = application:get_env(antidote, pubsub_port, ?DEFAULT_PUBSUB_PORT),
     [{Ip1, Port} || {Ip1, _, _} <- List, Ip1 /= {127, 0, 0, 1}].
 
