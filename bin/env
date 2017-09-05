@@ -12,7 +12,7 @@ fi
 
 # Protocol buffer port.
 if [ -z "$PB_IP" ]; then
-  export PB_IP="127.0.0.1"
+  export PB_IP="0.0.0.0"
 fi
 
 # Pub/sub port.
@@ -49,16 +49,14 @@ if [ ! -z "$MESOS_TASK_ID" ]; then
   # and if it resolves through the resolver; using a resolvable name
   # that's only resolvable with resolv.conf won't work for long names.
   if [ ! -z "$HOSTNAME" ]; then
-    if /usr/bin/dig ${HOSTNAME} | grep -q 'NXDOMAIN'
       export NODE_NAME=antidote@${HOSTNAME}
-    then
+    else
       export NODE_NAME=antidote@${IP}
-    fi
   fi
 
   # Else, default to IP.
   if [ -z "$NODE_NAME" ]; then
-    export NODE_NAME=andtidote@${IP}
+    export NODE_NAME=antidote@${IP}
   fi
 
   # Handoff port.

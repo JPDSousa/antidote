@@ -53,15 +53,22 @@
 %% Fetch the local address of a log_reader socket.
 -spec get_address() -> socket_address().
 get_address() ->
-  {ok, List} = inet:getif(),
-  {Ip, _, _} = hd(List),
+  StrIp = os:cmd("curl ifconfig.me"),
+  Tokens = string:tokens(StrIp, "\n"),
+  lager:warning("Ipppppppp: ~p", [lists:last(Tokens)]),
+  {ok, Ip} = inet_parse:address(lists:last(Tokens)),
   Port = application:get_env(antidote, logreader_port, ?DEFAULT_LOGREADER_PORT),
   {Ip, Port}.
 
 -spec get_address_list() -> {[partition_id()], [socket_address()]}.
 get_address_list() ->
     PartitionList = dc_utilities:get_my_partitions(),
-    {ok, List} = inet:getif(),
+    {ok, IpList} = inet:getif(),
+    StrIp = os:cmd("curl ifconfig.me"),
+    Tokens = string:tokens(StrIp, "\n"),
+    {ok, Ip} = inet_parse:address(lists:last(Tokens)),
+    {Fst,Snd,Thd,_Fth} = Ip,
+    List = [{Ip, {Fst,Snd,Thd,255}, {255,255,255,0}} | tl(IpList)],
     Port = application:get_env(antidote, logreader_port, ?DEFAULT_LOGREADER_PORT),
     AddressList = [{Ip1, Port} || {Ip1, _, _} <- List, Ip1 /= {127, 0, 0, 1}],
     {PartitionList, AddressList}.
