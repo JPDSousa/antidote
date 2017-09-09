@@ -50,7 +50,7 @@
 -spec get_address() -> socket_address().
 get_address() ->
   %% TODO check if we do not return a link-local address
-  StrIp = os:cmd("curl ifconfig.me"),
+  StrIp = os:cmd("curl v4.ifconfig.co"),
   Tokens = string:tokens(StrIp, "\n"),
   lager:warning("Ipppppppp: ~p", [lists:last(Tokens)]),
   {ok, Ip} = inet_parse:address(lists:last(Tokens)),
@@ -60,7 +60,7 @@ get_address() ->
 -spec get_address_list() -> [socket_address()].
 get_address_list() ->
     {ok, IpList} = inet:getif(),
-    StrIp = os:cmd("curl ifconfig.me"),
+    StrIp = os:cmd("curl v4.ifconfig.co"),
     Tokens = string:tokens(StrIp, "\n"),
     {ok, Ip} = inet_parse:address(lists:last(Tokens)),
     {Fst,Snd,Thd,_Fth} = Ip,
