@@ -16,6 +16,10 @@ cleantests:
 	rm -f test/*.beam
 	rm -rf logs/
 
+run_public:
+	chmod u+x ./scripts/run_new.sh
+	./scripts/run_new.sh
+
 shell:
 	$(REBAR) shell --name='antidote@127.0.0.1' --setcookie antidote --config config/sys-debug.config
 
