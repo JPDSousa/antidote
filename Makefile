@@ -17,7 +17,6 @@ cleantests:
 	rm -rf logs/
 
 run_public:
-	chmod u+x ./scripts/run_new.sh
 	./scripts/run_new.sh
 
 shell:
@@ -63,6 +62,9 @@ tutorial:
 	docker run -t -i cmeiklejohn/antidote-tutorial
 
 # Mesos targets.
+
+clear_background: distclean rel
+	./scripts/run_new_bg.sh
 
 foreground: rel
 	./_build/default/rel/antidote/bin/env foreground
